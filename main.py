@@ -7,16 +7,19 @@ from google.genai import types
 
 def main():
     args = sys.argv
+    options = []
     if "--verbose" in args:
-        i = args.index("--verbose")
+        opt = "--verbose"
+        i = args.index(opt)
         args = args[:i] + args[i+1:] # take option out
+        options.append(opt)
 
     NUM_OF_ARGS = 2
     if len(args) < NUM_OF_ARGS:
         print("Usage: main.py [prompt]")
         print(f"Error: expected {NUM_OF_ARGS} arguments; received {len(args)} - exiting with code 1")
         exit(1)
-    user_prompt = str(sys.argv[1])
+    user_prompt = str(args[1])
 
     print("Hello from ai-agent!")
     load_dotenv()
@@ -37,10 +40,16 @@ def main():
     )
     print(response.text)
 
-    print(f"User prompt: {user_prompt}")
-    # Print token info
-    print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
-    print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+    # Handle options
+    for option in options:
+        match (option):
+            case "--verbose":
+                print(f"User prompt: {user_prompt}")
+                print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
+                print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
+            case _:
+                print("Error: invalid option")
+                exit(1)
 
 
 if __name__ == "__main__":
