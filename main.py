@@ -6,10 +6,15 @@ from google.genai import types
 
 
 def main():
+    args = sys.argv
+    if "--verbose" in args:
+        i = args.index("--verbose")
+        args = args[:i] + args[i+1:] # take option out
+
     NUM_OF_ARGS = 2
-    if len(sys.argv) != NUM_OF_ARGS:
+    if len(args) < NUM_OF_ARGS:
         print("Usage: main.py [prompt]")
-        print(f"Error: expected {NUM_OF_ARGS} arguments; received {len(sys.argv)} - exiting with code 1")
+        print(f"Error: expected {NUM_OF_ARGS} arguments; received {len(args)} - exiting with code 1")
         exit(1)
     user_prompt = str(sys.argv[1])
 
@@ -32,6 +37,7 @@ def main():
     )
     print(response.text)
 
+    print(f"User prompt: {user_prompt}")
     # Print token info
     print(f"Prompt tokens: {response.usage_metadata.prompt_token_count}")
     print(f"Response tokens: {response.usage_metadata.candidates_token_count}")
