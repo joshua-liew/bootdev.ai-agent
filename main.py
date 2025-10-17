@@ -16,7 +16,7 @@ def main():
     if not args or (len(args) < REQUIRED_ARGS or len(args) > REQUIRED_ARGS):
         print("AI Code Assistant")
         print("=================")
-        print("Usage: main.py [prompt]")
+        print("Usage: main.py <PROMPT> [--verbose]")
         print(f"Error: expected {REQUIRED_ARGS} arguments; received {len(args)} - exiting with code 1")
         exit(1)
     user_prompt = str(args[0])
