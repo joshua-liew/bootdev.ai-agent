@@ -34,7 +34,7 @@ def get_dir_contents(dir_path):
         item_path = os.path.join(dir_path, item)
         try:
             size = os.path.getsize(item_path)
-            content = f'- {item}: file_size={size} bytes, is_dir={os.path.isdir(item)}'
+            content = f'- {item}: file_size={size} bytes, is_dir={os.path.isdir(item_path)}'
         except Exception as err:
             content = f'Error: {err=}, {type(err)=}'
         result.append(content)
