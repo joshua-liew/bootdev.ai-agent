@@ -14,4 +14,9 @@ def get_files_info(working_directory, directory="."):
 
     # CHECK: if directory or file actually exists
 
-    return f'Success: path is {user_dir_path_abs}'
+    user_dir_content_list = os.listdir(user_dir_path_abs)
+    user_dir_content_info = list(map(
+        lambda item: f'- {item}: file_size={os.path.getsize(item)} bytes, is_dir={os.path.isdir(item)}',
+        user_dir_content_list
+    ))
+    return "\n".join(user_dir_content_info)
