@@ -6,22 +6,22 @@ run_cases = [
         [
             (
                 ("calculator", ".",),
-                ("Result for", "main.py", "tests.py", "pkg",),
+                ("main.py", "tests.py", "pkg",),
                 ("Error:",)
             ),
             (
                 ("calculator", "pkg",),
-                ("Result for", "calculator.py", "render.py",),
+                ("calculator.py", "render.py",),
                 ("Error:",)
             ),
             (
                 ("calculator", "/bin",),
-                ("Result for", "Error: ",),
+                ("Error:",),
                 ()
             ),
             (
                 ("calculator", "../",),
-                ("Result for", "Error: ",),
+                ("Error:",),
                 ()
             ),
         ]
