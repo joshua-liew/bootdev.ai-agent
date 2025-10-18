@@ -5,7 +5,7 @@ def get_files_info(working_directory, directory="."):
     wdir_abs_path = get_abs_path(working_directory)
     dir_abs_path = get_abs_path(os.path.join(working_directory, directory))
     # CHECK: validate within working directory boundary
-    if not wdir_abs_path in dir_abs_path:
+    if wdir_abs_path not in dir_abs_path:
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
 
     # CHECK: directory is a file
@@ -29,13 +29,14 @@ def get_abs_path(path):
 
 def get_dir_contents(dir_path):
     contents = os.listdir(dir_path)
+    print(contents)
     result = []
     for item in contents:
+        item_path = os.path.join(dir_path, item)
         try:
-            size = os.path.getsize(item)
+            size = os.path.getsize(item_path)
             content = f'- {item}: file_size={size} bytes, is_dir={os.path.isdir(item)}'
         except Exception as err:
             content = f'Error: {err=}, {type(err)=}'
-        else:
-            result.append(content)
+        result.append(content)
     return '\n'.join(result)
