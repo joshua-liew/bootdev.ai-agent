@@ -1,7 +1,5 @@
 import os
-
-
-FILE_CONTENT_MAX_SIZE = 100
+from .config import *
 
 
 def get_file_content(working_directory, file_path):
