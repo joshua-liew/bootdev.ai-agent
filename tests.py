@@ -24,6 +24,21 @@ run_cases = [
                 ("Error:",),
                 ()
             ),
+            (
+                ("calculator", "../..",),
+                ("Error:",),
+                ()
+            ),
+            (
+                ("calculator", "..",),
+                ("Error:",),
+                ()
+            ),
+            (
+                ("calculator", "/home",),
+                ("Error:",),
+                ()
+            ),
         ]
     )
 ]
