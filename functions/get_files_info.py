@@ -5,37 +5,39 @@ def get_files_info(working_directory, directory="."):
     wdir_abs_path = get_abs_path(working_directory)
     dir_abs_path = get_abs_path(os.path.join(working_directory, directory))
     # CHECK: validate within working directory boundary
-    if wdir_abs_path not in dir_abs_path:
+    if not dir_abs_path.startswith(wdir_abs_path):
         return f'Error: Cannot list "{directory}" as it is outside the permitted working directory'
 
-    # CHECK: directory is a file
-    if os.path.isfile(dir_abs_path):
+    # CHECK: validate if directory
+    if not os.path.isdir(dir_abs_path):
         return f'Error: "{directory}" is not a directory'
 
     # CHECK: if directory or file actually exists
 
-    content = get_dir_contents(dir_abs_path)
-    return content
+    contents = get_dir_contents(dir_abs_path)
+    return contents
 
 
 def get_abs_path(path):
     try:
         abs_path = os.path.abspath(path)
     except Exception as err:
-        return f'Error: {err=}, {type(err)=}'
+        return f'Error: {err=}'
     else:
         return abs_path
 
 
 def get_dir_contents(dir_path):
-    contents = os.listdir(dir_path)
-    result = []
-    for item in contents:
-        item_path = os.path.join(dir_path, item)
-        try:
+    try:
+        contents = os.listdir(dir_path)
+        contents_info = []
+        for item in contents:
+            item_path = os.path.join(dir_path, item)
             size = os.path.getsize(item_path)
-            content = f'- {item}: file_size={size} bytes, is_dir={os.path.isdir(item_path)}'
-        except Exception as err:
-            content = f'Error: {err=}, {type(err)=}'
-        result.append(content)
-    return '\n'.join(result)
+            is_dir = os.path.isdir(item_path)
+            contents_info.append(
+                f'- {item}: file_size={size} bytes, is_dir={is_dir}'
+            )
+        return '\n'.join(contents_info)
+    except Exception as err:
+        return f'Error: {err=}'
