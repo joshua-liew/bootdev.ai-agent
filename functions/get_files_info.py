@@ -29,7 +29,6 @@ def get_abs_path(path):
 
 def get_dir_contents(dir_path):
     contents = os.listdir(dir_path)
-    print(contents)
     result = []
     for item in contents:
         item_path = os.path.join(dir_path, item)
