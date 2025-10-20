@@ -1,6 +1,7 @@
 from functions.get_files_info import get_files_info
 from functions.get_file_content import get_file_content
 from functions.write_file import write_file
+from functions.run_python_file import run_python_file
 
 run_cases = [
     (
@@ -90,6 +91,34 @@ run_cases += [
             (
                 ("calculator", "/tmp/temp.txt", "this should not be allowed",),
                 ("Error:",),
+                ()
+            ),
+        ]
+    ),
+]
+
+run_cases += [
+    (
+        run_python_file,
+        [
+            (
+                ("calculator", "/bin/sh", ["uv" "run"],),
+                ("Error: Cannot execute", "as it is outside the permitted working directory",),
+                ()
+            ),
+            (
+                ("calculator", "not_found.py", ["uv" "run"],),
+                ("Error: File", "not found.",),
+                ()
+            ),
+            (
+                (".", "calculator", ["uv" "run"],),
+                ("Error: ", "is not a file.",),
+                ()
+            ),
+            (
+                (".", "README.md", ["uv" "run"],),
+                ("Error: ", "is not a Python file.",),
                 ()
             ),
         ]
