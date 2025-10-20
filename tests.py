@@ -1,5 +1,6 @@
 from functions.get_files_info import get_files_info
 from functions.get_file_content import get_file_content
+from functions.write_file import write_file
 
 run_cases = [
     (
@@ -65,6 +66,29 @@ run_cases += [
             ),
             (
                 ("calculator", "pkg/does_not_exist.py",),
+                ("Error:",),
+                ()
+            ),
+        ]
+    ),
+]
+
+run_cases += [
+    (
+        write_file,
+        [
+            (
+                ("calculator", "lorem.txt", "wait, this isn't lorem ipsum",),
+                ("28 characters written",),
+                ()
+            ),
+            (
+                ("calculator", "pkg/morelorem.txt", "lorem ipsum dolor sit amet",),
+                ("26 characters written",),
+                ()
+            ),
+            (
+                ("calculator", "/tmp/temp.txt", "this should not be allowed",),
                 ("Error:",),
                 ()
             ),
