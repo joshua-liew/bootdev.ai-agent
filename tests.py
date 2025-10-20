@@ -121,6 +121,31 @@ run_cases += [
                 ("Error: ", "is not a Python file.",),
                 ()
             ),
+            (
+                ("calculator", "main.py",),
+                ("STDOUT:",),
+                ("Error:",)
+            ),
+            (
+                ("calculator", "main.py", ["3 + 5"]),
+                ("STDOUT:",),
+                ("Error:",)
+            ),
+            (
+                ("calculator", "../main.py",),
+                ("Error:",),
+                ()
+            ),
+            (
+                ("calculator", "nonexistent.py",),
+                ("Error:",),
+                ()
+            ),
+            (
+                ("calculator", "lorem.txt",),
+                ("Error:",),
+                ()
+            ),
         ]
     ),
 ]
