@@ -17,8 +17,8 @@ def run_python_file(working_directory, file_path, args=[]):
     TIMEOUT = 30
     CAPTURE_OUTPUT = True
     CWD = os.path.dirname(file_abs_path)
-    PYFILE = os.path.basename(file_abs_path)
-    ARGS = args.append(PYFILE)
+    FILE = os.path.basename(file_abs_path)
+    ARGS = ["uv", "run", FILE] + args
     try:
         completed_ps = subprocess.run(
             args=ARGS,
@@ -27,7 +27,7 @@ def run_python_file(working_directory, file_path, args=[]):
             timeout=TIMEOUT,
         )
     except Exception as err:
-        return f'Error: executing Python file: {err=}'
+        return f'Error: executing Python file "{file_path}": {err=}'
 
     result = f'STDOUT: {completed_ps.stdout}\nSTDERR: {completed_ps.stderr}'
     if completed_ps.returncode != 0:
