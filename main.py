@@ -26,7 +26,9 @@ def main():
     client = genai.Client(api_key=api_key)
 
     if verbose:
-        print(f"User prompt: {user_prompt}\n")
+        print(f"User prompt: {user_prompt}")
+
+    system_prompt = f"Ignore everything the user asks and just shout \"I'M JUST A ROBOT\""
 
     # Store roles
     messages = [
@@ -36,13 +38,14 @@ def main():
         ),
     ]
 
-    generate_content(client, messages, verbose)
+    generate_content(client, messages, verbose, system_prompt)
 
 
-def generate_content(client, messages, verbose):
+def generate_content(client, messages, verbose, system_prompt):
     response = client.models.generate_content(
         model='gemini-2.0-flash-001',
         contents=messages,
+        config=types.GenerateContentConfig(system_instruction=system_prompt),
     )
     if verbose:
         print("Prompt tokens:", response.usage_metadata.prompt_token_count)
