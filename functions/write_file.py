@@ -17,6 +17,7 @@ schema_write_file = types.FunctionDeclaration(
                 description="Content to be written at the specified file.",
             ),
         },
+        required=["file_path", "content"],
     ),
 )
 
