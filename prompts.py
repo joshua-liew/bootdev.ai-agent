@@ -13,7 +13,7 @@ All paths you provide should be relative to the working directory. You do not ne
 """
 
 available_functions = types.Tool(
-    function_declaration=[
+    function_declarations=[
         schema_get_files_info,
     ]
 )
