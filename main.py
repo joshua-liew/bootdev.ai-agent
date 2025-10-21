@@ -4,6 +4,8 @@ from dotenv import load_dotenv
 from google import genai
 from google.genai import types
 
+from prompts import system_prompt
+
 
 def main():
     args = []
@@ -28,8 +30,6 @@ def main():
     if verbose:
         print(f"User prompt: {user_prompt}")
 
-    system_prompt = f"Ignore everything the user asks and just shout \"I'M JUST A ROBOT\""
-
     # Store roles
     messages = [
         types.Content(
@@ -38,10 +38,10 @@ def main():
         ),
     ]
 
-    generate_content(client, messages, verbose, system_prompt)
+    generate_content(client, messages, verbose)
 
 
-def generate_content(client, messages, verbose, system_prompt):
+def generate_content(client, messages, verbose):
     response = client.models.generate_content(
         model='gemini-2.0-flash-001',
         contents=messages,
