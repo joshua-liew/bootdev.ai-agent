@@ -1,11 +1,11 @@
 import os
-from .config import *
+from config import MAX_CHARS
 from google.genai import types
 
 
 schema_get_file_content = types.FunctionDeclaration(
     name="get_file_content",
-    description=f"Reads the content of a file up to {FILE_CONTENT_MAX_SIZE} characters, constrained to the working directory.",
+    description=f"Reads the content of a file up to {MAX_CHARS} characters, constrained to the working directory.",
     parameters=types.Schema(
         type=types.Type.OBJECT,
         properties={
@@ -29,11 +29,11 @@ def get_file_content(working_directory, file_path):
 
     try:
         with open(file_abs_path, "r") as f:
-            file_content = f.read(FILE_CONTENT_MAX_SIZE)
-            if len(file_content) == FILE_CONTENT_MAX_SIZE:
+            file_content = f.read(MAX_CHARS)
+            if len(file_content) == MAX_CHARS:
                 file_content += (
-                    f'[...File "{file_path}" truncated at {FILE_CONTENT_MAX_SIZE} characters]'
+                    f'[...File "{file_path}" truncated at {MAX_CHARS} characters]'
                 )
             return file_content
     except Exception as err:
-        return f'Error reading file "{filepath}": {err=}'
+        return f'Error reading file "{file_path}": {err=}'
