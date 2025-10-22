@@ -21,9 +21,6 @@ def call_function(function_call_part, verbose=False):
     """
     function_call_part: google.genai.types.FunctionCall
     """
-    if not function_call_part.name or not function_call_part.args:
-        raise Exception('Error: function call does not have name and args properties')
-
     if verbose:
         print(f"Calling function: {function_call_part.name}({function_call_part.args})")
     else:
