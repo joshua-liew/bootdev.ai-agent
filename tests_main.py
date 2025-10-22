@@ -59,6 +59,11 @@ test_cases = [
         ("Calling function", "get_files_info"),
         ("Error:",),
     ),
+    (
+        (["how does the calculator render results to the console?",]),
+        ("Calling function:", "Final response:"),
+        ("Error:",),
+    ),
 ]
 
 
@@ -96,11 +101,11 @@ def test(test_case):
     print("Arguments passed to main.py")
     for arg in args:
         print(f"> {arg}")
+    print("Expecting stdout to contain:")
     for k in exp:
-        print("Expecting stdout to contain:")
         print(f"* {k}")
+    print("Stdout should NOT contain:")
     for k in unexp:
-        print("Stdout should NOT contain:")
         print(f"** {k}")
 
     print(f'Actual:\n{result}\n')
