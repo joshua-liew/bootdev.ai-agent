@@ -1,8 +1,10 @@
 from google.genai import types
+
 from functions.get_files_info import schema_get_files_info, get_files_info
 from functions.get_file_content import schema_get_file_content, get_file_content
 from functions.run_python_file import schema_run_python_file, run_python_file
 from functions.write_file import schema_write_file, write_file
+from config import WORKING_DIR
 
 
 available_functions = types.Tool(
@@ -20,38 +22,36 @@ def call_function(function_call_part, verbose=False):
     function_call_part: google.genai.types.FunctionCall
     """
     if not function_call_part.name or not function_call_part.args:
-        return 'Error: function call does not have name and args properties'
+        raise Exception('Error: function call does not have name and args properties')
 
     if verbose:
         print(f"Calling function: {function_call_part.name}({function_call_part.args})")
     else:
         print(f" - Calling function: {function_call_part.name}")
 
-    WD = "./calculator"
+    function_map = {
+        "get_files_info": get_files_info,
+        "get_file_content": get_file_content,
+        "run_python_file": run_python_file,
+        "write_file": write_file,
+    }
     function_name = function_call_part.name
-    function_kwargs = function_call_part.args | {"working_directory": WD}
-    match function_call_part.name:
-        case "get_files_info":
-            function_result = get_files_info(**function_kwargs)
-        case "get_file_content":
-            function_result = get_file_content(**function_kwargs)
-        case "run_python_file":
-            function_result = run_python_file(**function_kwargs)
-        case "write_file":
-            function_result = write_file(**function_kwargs)
-        case _:
-            return types.Content(
-                role="tool",
-                parts=[
-                    types.Part.from_function_response(
-                        name=function_name,
-                        response={
-                            "error": f"Unknown function: {function_name}",
-                        },
-                    ),
-                ],
-            )
+    if function_name not in function_map:
+        return types.Content(
+            role="tool",
+            parts=[
+                types.Part.from_function_response(
+                    name=function_name,
+                    response={
+                        "error": f"Unknown function: {function_name}",
+                    },
+                ),
+            ],
+        )
 
+    args = dict(function_call_part.args)
+    args["working_directory"] = WORKING_DIR
+    function_result = function_map[function_name](**args)
     return types.Content(
         role="tool",
         parts=[
