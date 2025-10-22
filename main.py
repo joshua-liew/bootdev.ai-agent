@@ -59,12 +59,20 @@ def generate_content(client, messages, verbose):
     if not response.function_calls:
         return f'Unexpected: no response from Gemini client ({response.text=})'
 
+    function_responses = []
     for function_call in response.function_calls:
         function_call_result = call_function(function_call, verbose)
-        if not function_call_result.parts[0].function_response.response:
-            raise Exception('Error: no response from function call. (fatal)')
+        if (
+            not function_call_result.parts
+            or not function_call_result.parts[0].function_response
+        ):
+            raise Exception("Fatal: no response from function call; Exiting.")
         if verbose:
             print(f"-> {function_call_result.parts[0].function_response.response}")
+        function_responses.append(function_call_result.parts[0])
+
+    if not function_responses:
+        raise Exception("Fatal: no function responses generated; Exiting.")
 
 
 if __name__ == "__main__":
