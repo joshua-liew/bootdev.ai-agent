@@ -6,6 +6,7 @@ from google.genai import types
 
 from prompts import system_prompt
 from call_function import available_functions, call_function
+from config import MAX_CALLS
 
 
 def main():
@@ -39,10 +40,25 @@ def main():
         ),
     ]
 
-    generate_content(client, messages, verbose)
+    for _ in range(MAX_CALLS):
+        try:
+            result = generate_content(client, messages, verbose)
+        except Exception as err:
+            print(f"Exiting with code 1: {err=}")
+            sys.exit(1)
+        if result:
+            print(f"Final response:\n{result}")
+            break
+
+    return sys.exit(0)
 
 
 def generate_content(client, messages, verbose):
+    """
+    Return values: None | str
+    By default, LLM calls a function, updates the messages & return None.
+    Returns a string (response.text) when the action is not a function call.
+    """
     response = client.models.generate_content(
         model='gemini-2.0-flash-001',
         contents=messages,
@@ -58,7 +74,7 @@ def generate_content(client, messages, verbose):
     print("Response:")
 
     if not response.function_calls:
-        return f'Unexpected: no response from Gemini client ({response.text=})'
+        return response.text
 
     function_responses = []
     for function_call in response.function_calls:
@@ -87,6 +103,8 @@ def generate_content(client, messages, verbose):
         parts=function_responses,
     )
     messages.append(new_message)
+
+    return None
 
 
 if __name__ == "__main__":
