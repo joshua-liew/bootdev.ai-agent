@@ -51,6 +51,7 @@ def generate_content(client, messages, verbose):
             tools=[available_functions],
         ),
     )
+
     if verbose:
         print("Prompt tokens:", response.usage_metadata.prompt_token_count)
         print("Response tokens:", response.usage_metadata.candidates_token_count)
@@ -73,6 +74,19 @@ def generate_content(client, messages, verbose):
 
     if not function_responses:
         raise Exception("Fatal: no function responses generated; Exiting.")
+
+    # Update messages, mutating list outside of the function scope
+    # NOTE: candidate.content is of type (Content)
+    if not response.candidates:
+        raise "Fatal: response does not contain 'candidates' property"
+    for candidate in response.candidates:
+        messages.append(candidate.content)
+    # function_responses if a list of type (Parts)
+    new_message = types.Content(
+        role="user",
+        parts=function_responses,
+    )
+    messages.append(new_message)
 
 
 if __name__ == "__main__":
