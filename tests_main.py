@@ -33,6 +33,34 @@ test_cases = [
     ),
 ]
 
+test_cases = [
+    (
+        (["run tests.py", "--verbose",]),
+        ("Ran 9 tests",),
+        ("Error:",),
+    ),
+    (
+        (["get the contents of lorem.txt", "--verbose",]),
+        ("wait, this", "lorem ipsum",),
+        ("Error:",),
+    ),
+    (
+        (["create a new README.md file with the contents '# calculator'", "--verbose",]),
+        ("Successfully wrote to",),
+        ("Error:",),
+    ),
+    (
+        (["what files are in the root?", "--verbose",]),
+        ("lorem.txt", "README.md",),
+        ("Error:",),
+    ),
+    (
+        (["what files are in the root?",]),
+        ("Calling function", "get_files_info"),
+        ("Error:",),
+    ),
+]
+
 
 def test(test_case):
     FILE = "main.py"
