@@ -38,25 +38,25 @@ def run_python_file(working_directory, file_path, args=[]):
         return f'Error: "{file_path}" is not a file.'
     if not os.path.basename(file_abs_path).endswith('.py'):
         return f'Error: "{file_path}" is not a Python file.'
-
-    TIMEOUT = 30
-    CAPTURE_OUTPUT = True
-    CWD = os.path.dirname(file_abs_path)
-    FILE = os.path.basename(file_abs_path)
-    ARGS = ["uv", "run", FILE] + args
+    
     try:
-        completed_ps = subprocess.run(
-            args=ARGS,
-            capture_output=CAPTURE_OUTPUT,
-            cwd=CWD,
-            timeout=TIMEOUT,
+        commands = ["python", file_abs_path]
+        if args:
+            commands.extend(args)
+        result = subprocess.run(
+            commands,
+            capture_output=True,
+            text=True,
+            timeout=30,
+            cwd=wdir_abs_path,
         )
+        output = []
+        if result.stdout:
+            output.append(f"STDOUT:\n{result.stdout}")
+        if result.stderr:
+            output.append(f"STDERR:\n{result.stderr}")
+        if result.returncode != 0:
+            output.append(f"Process exited with code {result.returncode}")
+        return "\n".join(output) if output else "No output produced."
     except Exception as err:
-        return f'Error: executing Python file "{file_path}": {err=}'
-
-    result = f'STDOUT: {completed_ps.stdout}\nSTDERR: {completed_ps.stderr}'
-    if completed_ps.returncode != 0:
-        result += f'\nProcess exited with code {completed_ps.returncode}'
-    if not completed_ps.stdout:
-        result += f'\nNo output produced'
-    return result
+        return f"Error: executing Python file: {err=}"
