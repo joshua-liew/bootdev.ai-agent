@@ -27,6 +27,11 @@ uv sync
 ```
 source .venv/bin/activate
 ```
+- Create a `.env` to store secrets. Store your API key there in the following format.
+> To create Gemini API Key with Google AI Studio follow the official [instructions](https://ai.google.dev/gemini-api/docs/api-key).
+```
+GEMINI_API_KEY="<your_gemini_api_key>"
+```
 - Test the program with `uv run main.py`. (Expected output below)
 ```
 AI Code Assistant
