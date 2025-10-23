@@ -40,7 +40,8 @@ def main():
         ),
     ]
 
-    for _ in range(MAX_CALLS):
+    iter, stop_iter = (0, False)
+    while (iter < MAX_CALLS and not stop_iter):
         try:
             response_text, candidates, function_responses \
                 = generate_content(client, messages, verbose)
@@ -48,11 +49,11 @@ def main():
             print(f"Exiting with code 1: {err=}")
             sys.exit(1)
 
-        if response_text:
+        if response_text is not None:
             print(f"Final response:\n{response_text}")
-            break
+            stop_iter = True
         # Update messages to pass into LLM
-        if candidates and function_responses:
+        if (candidates is not None) and (function_responses is not None):
             for candidate in candidates:
                 messages.append(candidate.content)
             messages.append(
@@ -61,6 +62,11 @@ def main():
                     parts=function_responses,
                 )
             )
+            iter += 1
+
+    if (iter == MAX_CALLS) and not stop_iter:
+        print(f"Exiting with code 1: could not complete task within max ({MAX_CALLS}) iterations .")
+        return sys.exit(1)
 
     return sys.exit(0)
 
