@@ -42,22 +42,35 @@ def main():
 
     for _ in range(MAX_CALLS):
         try:
-            result = generate_content(client, messages, verbose)
+            response_text, candidates, function_responses \
+                = generate_content(client, messages, verbose)
         except Exception as err:
             print(f"Exiting with code 1: {err=}")
             sys.exit(1)
-        if result:
-            print(f"Final response:\n{result}")
+
+        if response_text:
+            print(f"Final response:\n{response_text}")
             break
+        # Update messages to pass into LLM
+        if candidates and function_responses:
+            for candidate in candidates:
+                messages.append(candidate.content)
+            messages.append(
+                types.Content(
+                    role="user",
+                    parts=function_responses,
+                )
+            )
 
     return sys.exit(0)
 
 
 def generate_content(client, messages, verbose):
     """
-    Return values: None | str
-    By default, LLM calls a function, updates the messages & return None.
-    Returns a string (response.text) when the action is not a function call.
+    Return values: (response.text, response.candidates, function_responses)
+    Returns a tuple with the following 2 possible permutations of values
+    - (response.text, None, None) : LLM does not call a function
+    - (None, response.candidates, function_responses) : LLM calls a function
     """
     response = client.models.generate_content(
         model='gemini-2.0-flash-001',
@@ -74,7 +87,7 @@ def generate_content(client, messages, verbose):
         print("Response:")
 
     if not response.function_calls:
-        return response.text
+        return (response.text, None, None)
 
     function_responses = []
     for function_call in response.function_calls:
@@ -88,23 +101,11 @@ def generate_content(client, messages, verbose):
             print(f"-> {function_call_result.parts[0].function_response.response}")
         function_responses.append(function_call_result.parts[0])
 
+    if not response.candidates:
+        raise Exception("Fatal: no property 'candidates' in response; Exiting.")
     if not function_responses:
         raise Exception("Fatal: no function responses generated; Exiting.")
-
-    # Update messages, mutating list outside of the function scope
-    # NOTE: candidate.content is of type (Content)
-    if not response.candidates:
-        raise "Fatal: response does not contain 'candidates' property"
-    for candidate in response.candidates:
-        messages.append(candidate.content)
-    # function_responses if a list of type (Parts)
-    new_message = types.Content(
-        role="user",
-        parts=function_responses,
-    )
-    messages.append(new_message)
-
-    return None
+    return (None, response.candidates, function_responses)
 
 
 if __name__ == "__main__":
