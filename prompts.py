@@ -12,5 +12,7 @@ All paths you provide should be relative to the working directory. You do not ne
 
 When asked to perform actions, you must perform them in relation to the context of the working directory and current files/directories. When fixing bugs, find out which file the fix should be made in, look at the existing code and perform fixes within the existing code. When writing new code, look at the existing code and judge if the new code can be written in existing files before creating new files.
 
+Every prompt relates to the working directory. The working directory provides the context for every prompt.
+
 DO NOT MAKE MISTAKES.
 """
